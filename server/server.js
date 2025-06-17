@@ -5,12 +5,12 @@ const multer = require('multer');
 const path = require('path');
 const app = express();
 
-// === Middleware ===
+
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// === Multer Setup for File Upload ===
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/');
@@ -22,13 +22,13 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// === MongoDB Connect ===
+
 mongoose.connect('mongodb://localhost:27017/loginApp', {
   useNewUrlParser: true
 }).then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
 
-// === Mongoose Schema ===
+
 const UserSchema = new mongoose.Schema({
   name: String,
   email: String,
@@ -38,14 +38,12 @@ const UserSchema = new mongoose.Schema({
 });
 const User = mongoose.model("User", UserSchema);
 
-// === Routes ===
 
-// ✅ Test route to check mobile access
 app.get('/api/test', (req, res) => {
   res.send('✅ Backend is reachable from mobile!');
 });
 
-// Register Route
+
 app.post('/register', upload.single('photo'), async (req, res) => {
   const { name, email, password, mobile } = req.body;
   const photo = req.file?.filename || 'default.png';
@@ -62,7 +60,7 @@ app.post('/register', upload.single('photo'), async (req, res) => {
   }
 });
 
-// Login Route
+
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -75,7 +73,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Reset Password Route
+
 app.post("/reset-password", async (req, res) => {
   const { name, email, mobile, newPassword } = req.body;
 
@@ -93,7 +91,7 @@ app.post("/reset-password", async (req, res) => {
 });
 
 
-// ✅ Start Server (port 5000 and host 0.0.0.0)
+
 app.listen(5000, '0.0.0.0', () => {
   console.log('✅ Server running on http://0.0.0.0:5000');
 });
